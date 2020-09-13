@@ -1,4 +1,11 @@
 namespace Prog1 {
+    struct Node {
+        double value;
+        int row_position;
+        int column_position;
+        struct Node *next;
+    };
+    
     template <class T>
     int getNum(T &a) {
         std::cin >> a;
@@ -12,12 +19,13 @@ namespace Prog1 {
         return a > b;
     }
     
-    double** matrix_input(int &, int &);
-    void matrix_output(const char *, double **, int, int);
-    void vector_output(const char *, double [], int);
-    double **matrix_erase(double **&, int);
-    double* vector_result(double **, int, int);
-    double first_nonzero(double **, int, int);
-    double avg(double [], int);
-    double max(double [], int, int(*)(double, double));
+    void Create_Node(struct Node**, double, int, int);
+    struct Node* Create_Matrix(int &, int &);
+    double Retrieve_Coordinates(struct Node*, int, int);
+    void Print_Matrix(const char*, struct Node*, int, int);
+    void Print_Vector(const char*, double [], int);
+    struct Node* Erase_Matrix(struct Node*);
+    double* Create_Vector(struct Node*, int, int);
+    double avg(struct Node*, int, int);
+    double max(struct Node*, int, int(*)(double, double));
 }

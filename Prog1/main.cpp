@@ -4,25 +4,25 @@
 using namespace Prog1;
 
 int main() {
-    double **arr = nullptr;
+    struct Node *arr = nullptr;
     double *res = nullptr;
     int m, n;
     
-    arr = matrix_input(m, n);
+    arr = Create_Matrix(m, n);
     if (!arr) {
        std::cout << "Incorrect data detected!" << std::endl;
        return 1;
     }
-    matrix_output("Sourced matrix:", arr, m, n);
+    Print_Matrix("Sourced matrix:", arr, m, n);
     
-    res = vector_result(arr, m, n);
+    res = Create_Vector(arr, m, n);
     if (!res) {
        std::cout << "Error in allocating memory!" << std::endl;
        return 1;
     }
-    vector_output("Final vector:", res, m);
+    Print_Vector("Final vector:", res, m);
     
-    matrix_erase(arr, m);
+    Erase_Matrix(arr);
     delete[] res;
     return 0;
 }

@@ -2,10 +2,48 @@
 #include "Prog1.h"
 
 namespace Prog1 {
-    double** matrix_input(int &rm, int &rn) {
+    void Create_Node(struct Node** matrix, double non_zero_element, int row_index, int column_index) {
+        struct Node *temp, *rows;
+        temp = *matrix;
+        
+        if (!temp) {
+           try {
+               temp = new struct Node;
+           }
+           catch (std::bad_alloc &ba) {
+               std::cout << "Error in allocating memory: " << ba.what() << std::endl;
+               return;
+           }
+           temp->value = non_zero_element;
+           temp->row_position = row_index;
+           temp->column_position = column_index;
+           temp->next = nullptr;
+           *matrix = temp;
+        }
+        else {
+           while (temp->next) {
+              temp = temp->next;
+           }
+           try {
+               rows = new struct Node;
+           }
+           catch (std::bad_alloc &ba) {
+               std::cout << "Error in allocating memory: " << ba.what() << std::endl;
+               return;
+           }
+           rows->value = non_zero_element;
+           rows->row_position = row_index;
+           rows->column_position = column_index;
+           rows->next = nullptr;
+           temp->next = rows;
+        }
+    }
+    
+    struct Node* Create_Matrix(int &rm, int &rn) {
         const char *pr = "";
-        double **matrix = nullptr;
+        struct Node *matrix = nullptr;
         int m, n;
+        double item;
         
         do {
             std::cout << pr;
@@ -16,28 +54,18 @@ namespace Prog1 {
             }
         } while (m < 1 || n < 1);
         
-        try {
-            matrix = new double*[m];
-        }
-        catch (std::bad_alloc &ba) {
-            std::cout << "Too many rows in matrix: " << ba.what() << std::endl;
-            return nullptr;
-        }
-        
         for (int i = 0; i < m; i++) {
-            try {
-                matrix[i] = new double[n];
-            }
-            catch (std::bad_alloc &ba) {
-                std::cout << "Too many columns in matrix: " << ba.what() << std::endl;
-                matrix_erase(matrix, i);
-                return nullptr;
-            }
             std::cout << "Enter the items for matrix row #" << (i + 1) << ": ";
             for (int j = 0; j < n; j++) {
-                if (getNum(matrix[i][j]) < 0) {
-                   matrix_erase(matrix, i + 1);
+                if (getNum(item) < 0) {
+                   Erase_Matrix(matrix);
                    return nullptr;
+                }
+                else if (!item) {
+                   continue;
+                }
+                else {
+                   Create_Node(&matrix, item, i, j);
                 }
             }
         }
@@ -47,78 +75,104 @@ namespace Prog1 {
         return matrix;
     }
     
-    void matrix_output(const char *msg, double **a, int m, int n) {
+    double Retrieve_Coordinates(struct Node* matrix, int row_index, int column_index) {
+        struct Node *temp = matrix;
+        
+        while (temp) {
+           if (temp->row_position == row_index && temp->column_position == column_index) {
+              return temp->value;
+           }
+           temp = temp->next;
+        }       
+        return 0;
+    }
+    
+    void Print_Matrix(const char* msg, struct Node* matrix, int m, int n) {
         std::cout << msg << std::endl;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                std::cout << a[i][j] << " ";
+                std::cout << Retrieve_Coordinates(matrix, i, j) << " ";
             }
             std::cout << std::endl;
         }
     }
     
-    void vector_output(const char *msg, double a[], int m) {
+    void Print_Vector(const char* msg, double vector[], int m) {
         std::cout << msg << std::endl;
         for (int i = 0; i < m; i++) {
-            std::cout << a[i] << " ";
+            std::cout << vector[i] << " ";
         }
         std::cout << std::endl;
     }
     
-    double **matrix_erase(double **&matrix, int m) {
-        for (int i = 0; i < m; i++) {
-            delete[] matrix[i];
+    struct Node* Erase_Matrix(struct Node* matrix) {
+        struct Node *temp, *tmp;
+        temp = matrix;
+        
+        while (temp) {
+           tmp = temp;
+           temp = temp->next;
+           delete tmp;
         }
-        delete[] matrix;
         return nullptr;
     }
     
-    double* vector_result(double **a, int m, int n) {
-        double *array = nullptr;    
+    double* Create_Vector(struct Node* matrix, int m, int n) {
+        struct Node *temp = matrix;
+        double *vector = nullptr;
+        double first_element = 0;
+        
         try {
-            array = new double[m];
+            vector = new double[m];
         }
         catch (std::bad_alloc &ba) {
             std::cout << ba.what() << std::endl;
             return nullptr;
         }
-        
+
         for (int i = 0; i < m; i++) {
-            if (a[i][0] != 0) {
-               array[i] = avg(a[i], n) / max(a[i], n, isgreater);
+            while (temp) {
+               if (temp->row_position == i && temp->column_position == 0) {
+                  first_element = temp->value;
+                  break;
+               }
+               temp = temp->next;
+            }
+            if (first_element > 0) {
+               vector[i] = avg(matrix, i, n) / max(matrix, i, isgreater);
             }
             else {
-               array[i] = avg(a[i], n) / first_nonzero(a, m, n);
+               vector[i] = avg(matrix, i, n) / matrix->value;
             }
+            first_element = 0;
         }
-        return array;
+        return vector;
     }
     
-    double first_nonzero(double **a, int m, int n) {
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (a[i][j] != 0) {
-                   return a[i][j];
-                }
-            }
-        }
-        return -1;
-    }
-    
-    double avg(double a[], int n) {
+    double avg(struct Node* matrix, int row_index, int n) {
+        struct Node *temp = matrix;
         double sum = 0;
-        for (int i = 0; i < n; i++) {
-            sum += a[i];
+        
+        while (temp) {
+           if (temp->row_position == row_index) {
+              sum += temp->value;
+           }
+           temp = temp->next;
         }
         return sum / n;
     }
 
-    double max(double a[], int m, int(*f)(double, double)) {
-        double res = a[0];
-        for (int i = 0; i < m; i++) {
-            if (f(a[i], res) > 0) {
-               res = a[i];
-            }
+    double max(struct Node* matrix, int row_index, int(*f)(double, double)) {
+        struct Node *temp = matrix;
+        double res = temp->value;
+        
+        while (temp) {
+           if (temp->row_position == row_index) {
+              if (f((temp->value), res) > 0) {
+                 res = temp->value;
+              }
+           }
+           temp = temp->next;
         }
         return res;
     }

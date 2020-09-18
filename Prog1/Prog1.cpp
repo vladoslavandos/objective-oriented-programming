@@ -105,7 +105,7 @@ namespace Prog1 {
         std::cout << std::endl;
     }
     
-    struct Node* Erase_Matrix(struct Node *matrix) {
+    struct Node *Erase_Matrix(struct Node *matrix) {
         struct Node *temp, *tmp;
         temp = matrix;
         
@@ -117,7 +117,7 @@ namespace Prog1 {
         return nullptr;
     }
     
-    double* Create_Vector(struct Node *matrix, int m, int n) {
+    double *Create_Vector(struct Node *matrix, int m, int n) {
         struct Node *temp = matrix;
         double *vector = nullptr;
         double first_element = 0;

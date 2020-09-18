@@ -2,7 +2,7 @@
 #include "Prog1.h"
 
 namespace Prog1 {
-    void Create_Node(struct Node** matrix, double non_zero_element, int row_index, int column_index) {
+    void Create_Node(struct Node **matrix, double non_zero_element, int row_index, int column_index) {
         struct Node *temp, *rows;
         temp = *matrix;
         
@@ -39,7 +39,7 @@ namespace Prog1 {
         }
     }
     
-    struct Node* Create_Matrix(int &rm, int &rn) {
+    struct Node *Create_Matrix(int &rm, int &rn) {
         const char *pr = "";
         struct Node *matrix = nullptr;
         int m, n;
@@ -75,7 +75,7 @@ namespace Prog1 {
         return matrix;
     }
     
-    double Retrieve_Coordinates(struct Node* matrix, int row_index, int column_index) {
+    double Retrieve_Coordinates(struct Node *matrix, int row_index, int column_index) {
         struct Node *temp = matrix;
         
         while (temp) {
@@ -87,7 +87,7 @@ namespace Prog1 {
         return 0;
     }
     
-    void Print_Matrix(const char* msg, struct Node* matrix, int m, int n) {
+    void Print_Matrix(const char *msg, struct Node *matrix, int m, int n) {
         std::cout << msg << std::endl;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
@@ -97,7 +97,7 @@ namespace Prog1 {
         }
     }
     
-    void Print_Vector(const char* msg, double vector[], int m) {
+    void Print_Vector(const char *msg, double vector[], int m) {
         std::cout << msg << std::endl;
         for (int i = 0; i < m; i++) {
             std::cout << vector[i] << " ";
@@ -105,7 +105,7 @@ namespace Prog1 {
         std::cout << std::endl;
     }
     
-    struct Node* Erase_Matrix(struct Node* matrix) {
+    struct Node* Erase_Matrix(struct Node *matrix) {
         struct Node *temp, *tmp;
         temp = matrix;
         
@@ -117,7 +117,7 @@ namespace Prog1 {
         return nullptr;
     }
     
-    double* Create_Vector(struct Node* matrix, int m, int n) {
+    double* Create_Vector(struct Node *matrix, int m, int n) {
         struct Node *temp = matrix;
         double *vector = nullptr;
         double first_element = 0;
@@ -149,7 +149,7 @@ namespace Prog1 {
         return vector;
     }
     
-    double avg(struct Node* matrix, int row_index, int n) {
+    double avg(struct Node *matrix, int row_index, int n) {
         struct Node *temp = matrix;
         double sum = 0;
         
@@ -162,7 +162,7 @@ namespace Prog1 {
         return sum / n;
     }
 
-    double max(struct Node* matrix, int row_index, int(*f)(double, double)) {
+    double max(struct Node *matrix, int row_index, int(*f)(double, double)) {
         struct Node *temp = matrix;
         double res = temp->value;
         
